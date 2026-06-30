@@ -1,277 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resume Match</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#f7f7f5;color:#222;padding:24px;font-family:system-ui,sans-serif;transition:background 0.2s,color 0.2s}
-body.dark{background:#111;color:#e0e0e0}
-.container{max-width:850px;margin:auto}
-.hero{margin-bottom:24px}
-.hero h1{font-size:3rem;font-weight:400;margin-bottom:6px}
-.hero p{color:#666;font-weight:300}
-body.dark .hero p{color:#888}
-.card{background:#fff;border:1px solid #d5d5d5;padding:24px;margin-bottom:20px;transition:background 0.2s,border-color 0.2s}
-body.dark .card{background:#1a1a1a;border-color:#333}
-label{display:block;margin-bottom:8px;font-weight:400;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.3px}
-body.dark label{color:#999}
-textarea{width:100%;min-height:160px;border:1px solid #d5d5d5;padding:14px;font-size:14px;resize:vertical;background:#f7f7f5;font-family:monospace;border-radius:0;transition:background 0.2s,border-color 0.2s,color 0.2s}
-body.dark textarea{background:#222;border-color:#444;color:#e0e0e0}
-textarea:focus{outline:none;border-color:#222;background:#fff}
-body.dark textarea:focus{background:#1a1a1a;border-color:#888}
-.upload-area{border:1px solid #d5d5d5;padding:24px;text-align:center;cursor:pointer;margin-bottom:10px;background:#f7f7f5;transition:background 0.2s,border-color 0.2s}
-body.dark .upload-area{background:#222;border-color:#444}
-.upload-area:hover{background:#eaeaea}
-body.dark .upload-area:hover{background:#2a2a2a}
-.upload-area.dragover{background:#ddd;border-color:#222}
-body.dark .upload-area.dragover{background:#333;border-color:#888}
-input[type=file]{display:none}
-.file-name{display:block;padding:6px 0 12px 0;font-size:0.85rem;color:#222;border-bottom:1px solid #d5d5d5;margin-bottom:12px;font-family:monospace;min-height:32px;transition:color 0.2s,border-color 0.2s}
-body.dark .file-name{color:#e0e0e0;border-color:#444}
-.file-name.empty{color:#999}
-body.dark .file-name.empty{color:#666}
-button{width:100%;border:1px solid #222;background:#222;color:#fff;padding:14px;cursor:pointer;font-size:14px;text-transform:uppercase;letter-spacing:0.5px;border-radius:0;transition:background 0.2s,color 0.2s,border-color 0.2s}
-body.dark button{border-color:#e0e0e0;background:#e0e0e0;color:#111}
-button:hover{background:#fff;color:#222}
-body.dark button:hover{background:#333;color:#e0e0e0;border-color:#888}
-.score{text-align:center;font-size:4rem;font-weight:300;letter-spacing:-1px}
-.message{text-align:center;color:#666;margin-bottom:20px;font-size:0.95rem}
-body.dark .message{color:#999}
-.progress{height:3px;background:#e0e0e0;margin-bottom:25px;transition:background 0.2s}
-body.dark .progress{background:#333}
-.progress-fill{height:100%;width:0%;background:#222;transition:0.3s}
-body.dark .progress-fill{background:#e0e0e0}
-.section{margin-top:24px}
-.section h3{font-weight:400;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px;color:#666;margin-bottom:8px}
-body.dark .section h3{color:#999}
-.skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.tag{padding:4px 10px;font-size:13px;font-family:monospace;border:1px solid transparent;border-radius:0}
-.match{background:#dff7e2;color:#0f7b32;border-color:#0f7b32}
-body.dark .match{background:#1a3a1a;color:#7bc78b;border-color:#2a6a3a}
-.missing{background:#ffe2e2;color:#b42318;border-color:#b42318}
-body.dark .missing{background:#3a1a1a;color:#e87a6a;border-color:#6a2a1a}
-#result{display:none}
-.footer{margin-top:24px;color:#999;text-align:center;font-size:12px;border-top:1px solid #d5d5d5;padding-top:20px;letter-spacing:0.3px;transition:color 0.2s,border-color 0.2s}
-body.dark .footer{color:#666;border-color:#333}
-.dark-toggle{position:fixed;bottom:24px;right:24px;width:48px;height:48px;border:1px solid #d5d5d5;background:#fff;color:#222;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,border-color 0.2s,color 0.2s;border-radius:0;padding:0;z-index:100}
-body.dark .dark-toggle{background:#1a1a1a;border-color:#444;color:#e0e0e0}
-.dark-toggle:hover{background:#eaeaea}
-body.dark .dark-toggle:hover{background:#2a2a2a}
-.improvements{background:#f7f7f5;padding:16px;margin-top:16px;border-left:3px solid #222;font-size:14px;line-height:1.6}
-body.dark .improvements{background:#222;border-left-color:#888}
-.improvements ul{list-style:none;padding:0}
-.improvements li{padding:6px 0;border-bottom:1px solid #e0e0e0;display:flex;gap:8px}
-body.dark .improvements li{border-bottom-color:#333}
-.improvements li:last-child{border-bottom:0}
-.badge{display:inline-block;font-size:11px;padding:2px 8px;background:#222;color:#fff;margin-left:8px;font-family:monospace}
-body.dark .badge{background:#e0e0e0;color:#111}
-.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
-.metric-item{text-align:center;padding:12px;border:1px solid #e0e0e0}
-body.dark .metric-item{border-color:#333}
-.metric-value{font-size:2rem;font-weight:300;display:block}
-.metric-label{font-size:0.75rem;color:#666;text-transform:uppercase;letter-spacing:0.5px}
-body.dark .metric-label{color:#999}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match · resume tool</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-  <div class="hero">
-    <h1>Resume Match</h1>
-    <p>upload or paste · compare with job description</p>
-  </div>
-  <div class="card">
-    <label>Job Description</label>
-    <textarea id="job" placeholder="paste job description here..."></textarea>
-    <label style="margin-top:20px;">Resume</label>
-    <div class="upload-area" id="dropZone">
-      <p>drop .txt file or click to select</p>
+  <div class="container">
+    <div class="hero">
+      <h1>Match</h1>
     </div>
-    <input type="file" id="resumeFile" accept=".txt">
-    <span class="file-name empty" id="fileName">no file selected</span>
-    <textarea id="resume" placeholder="or paste resume text here..."></textarea>
-    <button onclick="analyzeResume()">analyze</button>
-  </div>
-  <div class="card" id="result">
-    <div class="score" id="score">0%</div>
-    <div class="message" id="message"></div>
-    <div class="progress"><div class="progress-fill" id="progressBar"></div></div>
-    
-    <div class="metric-grid">
-      <div class="metric-item"><span class="metric-value" id="matchedCount">0</span><span class="metric-label">matched skills</span></div>
-      <div class="metric-item"><span class="metric-value" id="missingCount">0</span><span class="metric-label">missing skills</span></div>
+
+    <div class="card">
+      <label for="job">Job description</label>
+      <textarea id="job" placeholder="Paste job description…"></textarea>
+
+      <label style="margin-top: 1.4rem;">Resume</label>
+      <div class="upload-area" id="dropZone">
+        <span>↗ drop .txt or click</span>
+      </div>
+      <input type="file" id="resumeFile" accept=".txt">
+      <span class="file-name empty" id="fileName">no file selected</span>
+      <textarea id="resume" placeholder="Or paste resume text…"></textarea>
+
+      <button onclick="analyzeResume()">Analyze</button>
     </div>
-    
-    <div class="section"><h3>matched skills</h3><div class="skills" id="matchedSkills"></div></div>
-    <div class="section"><h3>missing skills</h3><div class="skills" id="missingSkills"></div></div>
-    
-    <div class="section"><h3>things to improve</h3>
-      <div class="improvements" id="improvements">
-        <ul id="improvementList"><li>analyze to see recommendations</li></ul>
+
+    <div class="card" id="result">
+      <div class="score" id="score">0%</div>
+      <div class="message" id="message"></div>
+      <div class="progress"><div class="progress-fill" id="progressBar"></div></div>
+
+      <div class="metric-grid">
+        <div class="metric-item"><span class="metric-value" id="matchedCount">0</span><span class="metric-label">matched</span></div>
+        <div class="metric-item"><span class="metric-value" id="missingCount">0</span><span class="metric-label">missing</span></div>
+      </div>
+
+      <div class="section"><h3>matched skills</h3><div class="skills" id="matchedSkills"></div></div>
+      <div class="section"><h3>missing skills</h3><div class="skills" id="missingSkills"></div></div>
+
+      <div class="section"><h3>improve</h3>
+        <div class="improvements" id="improvements">
+          <ul id="improvementList"><li><span>•</span> run analysis for insights</li></ul>
+        </div>
       </div>
     </div>
   </div>
-  <div class="footer">plain · functional · no surplus</div>
-</div>
 
-<button class="dark-toggle" id="darkToggle" title="Toggle dark mode">◐</button>
+  <button class="dark-toggle" id="darkToggle" title="Toggle dark mode">◐</button>
 
-<script>
-const fileInput = document.getElementById('resumeFile');
-const fileNameDisplay = document.getElementById('fileName');
-const dropZone = document.getElementById('dropZone');
-const resumeTextarea = document.getElementById('resume');
-
-fileInput.addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (!file) {
-    fileNameDisplay.textContent = 'no file selected';
-    fileNameDisplay.className = 'file-name empty';
-    return;
-  }
-  fileNameDisplay.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-  fileNameDisplay.className = 'file-name';
-  readFile(file);
-});
-
-dropZone.addEventListener('dragover', function(e) {
-  e.preventDefault();
-  this.classList.add('dragover');
-});
-dropZone.addEventListener('dragleave', function(e) {
-  e.preventDefault();
-  this.classList.remove('dragover');
-});
-dropZone.addEventListener('drop', function(e) {
-  e.preventDefault();
-  this.classList.remove('dragover');
-  const files = e.dataTransfer.files;
-  if (files.length > 0) {
-    const file = files[0];
-    if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-      fileInput.files = files;
-      fileNameDisplay.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-      fileNameDisplay.className = 'file-name';
-      readFile(file);
-    } else {
-      fileNameDisplay.textContent = 'error: only .txt files';
-      fileNameDisplay.className = 'file-name empty';
-    }
-  }
-});
-
-dropZone.addEventListener('click', function() {
-  fileInput.click();
-});
-
-function readFile(file) {
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    resumeTextarea.value = event.target.result;
-  };
-  reader.onerror = function() {
-    resumeTextarea.value = '';
-    fileNameDisplay.textContent = 'error reading file';
-    fileNameDisplay.className = 'file-name empty';
-  };
-  reader.readAsText(file);
-}
-
-function analyzeResume() {
-  const jobText = document.getElementById('job').value.toLowerCase();
-  const resumeText = document.getElementById('resume').value.toLowerCase();
-
-  const skills = [
-    "python","java","javascript","html","css",
-    "react","node","express","mongodb","sql",
-    "mysql","postgresql","docker","aws","git",
-    "github","linux","typescript","nextjs",
-    "firebase","flask","django","kubernetes",
-    "c++","c#","php","ruby","swift","kotlin",
-    "spring","angular","vue","jquery","bootstrap",
-    "tailwind","sass","webpack","babel","redux",
-    "graphql","rest","api","microservices","nginx",
-    "jenkins","ci/cd","terraform","ansible","helm",
-    "prometheus","grafana","elasticsearch","kafka",
-    "redis","rabbitmq","postman","swagger","jira",
-    "confluence","agile","scrum","kanban","tdd"
-  ];
-
-  let matched = [];
-  let missing = [];
-
-  skills.forEach(skill => {
-    if (jobText.includes(skill)) {
-      if (resumeText.includes(skill)) {
-        matched.push(skill);
-      } else {
-        missing.push(skill);
-      }
-    }
-  });
-
-  const total = matched.length + missing.length;
-  const score = total > 0 ? Math.round((matched.length / total) * 100) : 0;
-
-  document.getElementById('result').style.display = 'block';
-  document.getElementById('score').textContent = score + '%';
-  document.getElementById('progressBar').style.width = score + '%';
-  document.getElementById('matchedCount').textContent = matched.length;
-  document.getElementById('missingCount').textContent = missing.length;
-
-  let message = '';
-  if (score >= 80) message = 'strong match';
-  else if (score >= 60) message = 'good match · some gaps';
-  else if (score >= 40) message = 'moderate match';
-  else message = 'large skill gap';
-
-  document.getElementById('message').textContent = message;
-
-  document.getElementById('matchedSkills').innerHTML = matched.length
-    ? matched.map(s => `<span class="tag match">${s}</span>`).join('')
-    : 'none';
-
-  document.getElementById('missingSkills').innerHTML = missing.length
-    ? missing.map(s => `<span class="tag missing">${s}</span>`).join('')
-    : 'none';
-
-  // Generate improvements
-  const improvements = [];
-  if (missing.length > 0) {
-    improvements.push(`add ${missing.length} missing skill${missing.length > 1 ? 's' : ''}: ${missing.slice(0,5).join(', ')}${missing.length > 5 ? '...' : ''}`);
-  }
-  if (score < 70) {
-    improvements.push('increase keyword density for required skills');
-  }
-  if (resumeText.split(/\s+/).length < 200) {
-    improvements.push('resume length is short; expand with relevant experience and projects');
-  }
-  if (resumeText.split(/\s+/).length > 800) {
-    improvements.push('resume is verbose; concise bullet points improve readability');
-  }
-  if (matched.length === 0 && total > 0) {
-    improvements.push('no skills matched; rewrite resume to include keywords from job description');
-  }
-  if (score >= 80 && missing.length === 0) {
-    improvements.push('strong alignment; consider adding certifications or metrics to stand out');
-  }
-  if (improvements.length === 0) {
-    improvements.push('no critical gaps identified');
-  }
-
-  const list = document.getElementById('improvementList');
-  list.innerHTML = improvements.map(item => 
-    `<li><span>•</span> ${item}</li>`
-  ).join('');
-}
-
-// Dark mode toggle
-const darkToggle = document.getElementById('darkToggle');
-darkToggle.addEventListener('click', function() {
-  document.body.classList.toggle('dark');
-  this.textContent = document.body.classList.contains('dark') ? '◑' : '◐';
-});
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
